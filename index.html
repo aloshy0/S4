@@ -1,163 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Registration</title>
+<meta charset="UTF-8">
+<title>Event Registration System</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        }
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+}
 
-        body {
-            background: #f4f6f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+/* NAVBAR */
+nav {
+    background: #1e293b;
+    padding: 15px;
+    text-align: center;
+}
 
-        .container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            width: 350px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
+nav button {
+    margin: 5px;
+    padding: 10px 15px;
+    background: #38bdf8;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-        }
+/* CONTAINER */
+.container {
+    padding: 20px;
+    text-align: center;
+}
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+/* FORM */
+input, select {
+    padding: 10px;
+    margin: 10px;
+    width: 200px;
+    border-radius: 5px;
+    border: none;
+}
 
-        label {
-            font-size: 14px;
-            color: #555;
-            display: block;
-            margin-bottom: 5px;
-        }
+button.submit {
+    background: #22c55e;
+    color: white;
+}
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 14px;
-            transition: 0.2s;
-        }
+/* CARDS */
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px;
+}
 
-        input:focus, select:focus {
-            border-color: #007bff;
-            outline: none;
-        }
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    width: 150px;
+}
 
-        button {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            background: #007bff;
-            color: white;
-            font-size: 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+/* TABLE */
+table {
+    width: 80%;
+    margin: auto;
+    border-collapse: collapse;
+}
 
-        button:hover {
-            background: #0056b3;
-        }
+th, td {
+    padding: 10px;
+    border: 1px solid #334155;
+}
 
-        .message {
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .success {
-            color: green;
-        }
-
-        .error {
-            color: red;
-        }
-    </style>
+.delete-btn {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-    <h2>Event Registration</h2>
+<nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('register')">Register</button>
+    <button onclick="showSection('participants')">Participants</button>
+</nav>
 
-    <form id="registrationForm">
-        <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" placeholder="Enter your name">
+<!-- HOME -->
+<div id="home" class="container">
+    <h1>Event Registration System</h1>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Users</h3>
+            <p id="totalUsers">0</p>
         </div>
-
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" placeholder="Enter your email">
+        <div class="card">
+            <h3>Total Events</h3>
+            <p>3</p>
         </div>
+    </div>
+</div>
 
-        <div class="form-group">
-            <label for="event">Select Event</label>
-            <select id="event">
-                <option value="">-- Choose Event --</option>
-                <option value="Tech Fest">Tech Fest</option>
-                <option value="Workshop">Workshop</option>
-                <option value="Seminar">Seminar</option>
-            </select>
-        </div>
+<!-- REGISTER -->
+<div id="register" class="container" style="display:none;">
+    <h2>Register</h2>
 
-        <button type="submit">Register</button>
-    </form>
+    <input type="text" id="name" placeholder="Name"><br>
+    <input type="email" id="email" placeholder="Email"><br>
 
-    <p id="message" class="message"></p>
+    <select id="event">
+        <option value="">Select Event</option>
+        <option>Workshop</option>
+        <option>Seminar</option>
+        <option>Hackathon</option>
+    </select><br>
+
+    <button class="submit" onclick="register()">Submit</button>
+
+    <p id="msg"></p>
+</div>
+
+<!-- PARTICIPANTS -->
+<div id="participants" class="container" style="display:none;">
+    <h2>Participants</h2>
+
+    <table id="table">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Event</th>
+            <th>Action</th>
+        </tr>
+    </table>
 </div>
 
 <script>
-    const form = document.getElementById("registrationForm");
-    const message = document.getElementById("message");
 
-    form.addEventListener("submit", function(event) {
-        event.preventDefault();
+// NAVIGATION
+function showSection(section) {
+    document.getElementById("home").style.display = "none";
+    document.getElementById("register").style.display = "none";
+    document.getElementById("participants").style.display = "none";
 
-        const name = document.getElementById("name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const selectedEvent = document.getElementById("event").value;
+    document.getElementById(section).style.display = "block";
 
-        message.classList.remove("success", "error");
+    if(section === "participants") loadData();
+    if(section === "home") updateStats();
+}
 
-        if (!name || !email || !selectedEvent) {
-            message.textContent = "Please fill all fields.";
-            message.classList.add("error");
-            return;
-        }
+// SAVE DATA
+function saveData(name, email, event) {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    users.push({ name, email, event });
+    localStorage.setItem("users", JSON.stringify(users));
+}
 
-        if (!validateEmail(email)) {
-            message.textContent = "Enter a valid email address.";
-            message.classList.add("error");
-            return;
-        }
+// REGISTER
+function register() {
+    let name = document.getElementById("name").value.trim();
+    let email = document.getElementById("email").value.trim();
+    let event = document.getElementById("event").value;
+    let msg = document.getElementById("msg");
 
-        message.textContent = "Registration successful!";
-        message.classList.add("success");
-
-        form.reset();
-    });
-
-    function validateEmail(email) {
-    return email.includes("@") && email.includes(".");
-        return regex.test(email);
+    if (!name || !email || !event) {
+        msg.innerText = "Fill all fields!";
+        msg.style.color = "red";
+        return;
     }
+
+    if (!email.includes("@") || !email.includes(".")) {
+        msg.innerText = "Invalid email!";
+        msg.style.color = "red";
+        return;
+    }
+
+    saveData(name, email, event);
+
+    msg.innerText = "Registration Successful!";
+    msg.style.color = "lightgreen";
+
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("event").value = "";
+
+    updateStats();
+}
+
+// LOAD TABLE
+function loadData() {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let table = document.getElementById("table");
+
+    table.innerHTML = `
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Event</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+    users.forEach((user, index) => {
+        table.innerHTML += `
+            <tr>
+                <td>${user.name}</td>
+                <td>${user.email}</td>
+                <td>${user.event}</td>
+                <td><button class="delete-btn" onclick="deleteUser(${index})">Delete</button></td>
+            </tr>
+        `;
+    });
+}
+
+// DELETE USER
+function deleteUser(index) {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    users.splice(index, 1);
+    localStorage.setItem("users", JSON.stringify(users));
+    loadData();
+    updateStats();
+}
+
+// UPDATE STATS
+function updateStats() {
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    document.getElementById("totalUsers").innerText = users.length;
+}
+
+// INIT
+updateStats();
+
 </script>
 
 </body>
